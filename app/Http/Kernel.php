@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
             'bindings',
         ],
         'auth' => [
-            \App\Http\Middleware\checkAuth::class
+            \App\Http\Middleware\CheckAuth::class
         ],
     ];
 
