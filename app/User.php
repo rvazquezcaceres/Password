@@ -3,8 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
-class user extends Model
+class User extends Model
 {
     protected $table = 'users';
     protected $fillable = [
@@ -13,4 +14,12 @@ class user extends Model
         'password'
     ];
 
+    public function register(Request $request)
+    {
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->save();
+    }
 }
