@@ -119,7 +119,8 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = $request->password;
-        $user->update();    }
+        $user->update();    
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -136,6 +137,6 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'el usuario has sido eliminado'
-        ]);
+        ], 200);
     }
 }

@@ -27,7 +27,7 @@ class PasswordController extends Controller
     {
         //
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -81,7 +81,12 @@ class PasswordController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $password_previous = $request->PreviousTitle;
+        $password = Password::where('title', $password_previous)->first();
+
+        $password->title = $request->NewTitle;
+        $password->password = $request->NewPassword;
+        $password->update();    
     }
 
     /**
@@ -90,8 +95,15 @@ class PasswordController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $password_title = $request->title;
+        $password = Password::where('title', $password_title)->first();
+
+        $password->delete();
+
+        return response()->json([
+            'message' => 'la password sido eliminada'
+        ], 200);
     }
 }
