@@ -56,7 +56,7 @@ class UserController extends Controller
         $data_token = [
             'email' => $request->email
         ];
-
+        
         $user = User::where($data_token)->first();
         
         if($user->password == $request->password)
@@ -114,8 +114,15 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $email = $request->data_token->email;
+        $user = User::where('email', $email)->first();
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'el usuario has sido eliminado'
+        ]);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use Illuminate\Http\Request;
+use App\User;
+use App\Helper\Token;
 
 class CategoryController extends Controller
 {
@@ -35,7 +37,18 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        $email = $request->data_token->email;
+
+        $user = User::where('email', $email)->first();
+
+        $category = new Category();
+
+        $category->add_category($request, $user);
+
+        return response()->json([
+            'message' => 'nueva categoria'
+        ], 200);
     }
 
     /**
