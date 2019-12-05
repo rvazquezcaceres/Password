@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Password;
+use App\Category;
 use Illuminate\Http\Request;
 
 class PasswordController extends Controller
@@ -26,7 +27,7 @@ class PasswordController extends Controller
     {
         //
     }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -35,7 +36,17 @@ class PasswordController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $category_name = $request->category_name;
+
+        $category = Category::where('name', $category_name)->first();
+
+        $password = new Password();
+
+        $password->add_password($request, $category);
+
+        return response()->json([
+            'message' => 'nueva password'
+        ], 200);
     }
 
     /**

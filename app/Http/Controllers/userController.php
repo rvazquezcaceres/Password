@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Category;
 use App\Helper\Token;
+use App\Password;
 
 class UserController extends Controller
 {
@@ -58,7 +60,6 @@ class UserController extends Controller
         ];
         
         $user = User::where($data_token)->first();
-        
         if($user->password == $request->password)
         {
             $token = new Token($data_token);
@@ -79,10 +80,17 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        $users = User::all();
-        dd($users);
+        $email = $request->data_token->email;
+        $user = User::where('email', $email)->first();
+        $category = Category::where('user_id', $user->id)->get();
+        $password = Password::where('category_id', $category->id)->get();
+
+        return response()->json([
+            'User' => $user,
+            'Categories' => $category
+        ], 200);
     }
 
     /**
@@ -105,8 +113,13 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $email = $request->data_token->email;
+        $user = User::where('email', $email)->first();
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->update();    }
 
     /**
      * Remove the specified resource from storage.
