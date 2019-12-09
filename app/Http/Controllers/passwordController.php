@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Password;
 use App\Category;
+use App\User;
 use Illuminate\Http\Request;
 
 class PasswordController extends Controller
@@ -37,11 +38,8 @@ class PasswordController extends Controller
     public function store(Request $request)
     {
         $category_name = $request->category_name;
-
         $category = Category::where('name', $category_name)->first();
-
         $password = new Password();
-
         $password->add_password($request, $category);
 
         return response()->json([
@@ -55,10 +53,31 @@ class PasswordController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        $passwords = Password::all();
-        dd($passwords);
+        $email = $request->data_token->email;
+        $user = User::where('email', $email)->first(); 
+
+        $passwordArray = array();
+
+        if (isset($user)) {
+            $categories = Category::where('user_id', $user->id)->get();
+            foreach ($categories as $key => $category) {
+                $password = Password::where('category_id', $category->id)->get();
+                array_push($passwordArray, $password);
+            }
+            return response()->json([
+            'User' => $user,
+            'Passwords' => $passwordArray
+            ], 200);
+        } 
+        else
+        {
+            return response()->json([
+                'error' => 'No existe ese usuario'
+            ]);
+        }    
+
     }
 
     /**

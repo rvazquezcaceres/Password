@@ -82,15 +82,30 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
-        $email = $request->data_token->email;
-        $user = User::where('email', $email)->first();
-        $category = Category::where('user_id', $user->id)->get();
-        $password = Password::where('category_id', $category->id)->get();
 
-        return response()->json([
+        $email = $request->data_token->email;
+        $user = User::where('email', $email)->first(); 
+
+        $passwordArray = array();
+
+        if (isset($user)) {
+            $categories = Category::where('user_id', $user->id)->get();
+            foreach ($categories as $key => $category) {
+                $password = Password::where('category_id', $category->id)->get();
+                array_push($passwordArray, $password);
+            }
+            return response()->json([
             'User' => $user,
-            'Categories' => $category
-        ], 200);
+            'Categories' => $categories,
+            'Passwords' => $passwordArray
+            ], 200);
+        } 
+        else
+        {
+            return response()->json([
+                'error' => 'No existe ese usuario'
+            ]);
+        }  
     }
 
     /**
